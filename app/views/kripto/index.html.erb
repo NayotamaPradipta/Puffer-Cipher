@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html> 
+    
+    <h1 class="title">Puffer Block Cipher</h1>
+
+    <div class="form-wrapper">
+        <%= form_with url: process_kripto_path, method: 'post', local: true, data: {turbo: false}, html: {enctype: 'multipart/form-data' } do |form| %>
+            <%= hidden_field_tag :text_cache, params[:text], id: 'text_cache' %>
+            <%= hidden_field_tag :key_cache, params[:key],  id: 'key_cache' %>
+            <%= hidden_field_tag :input_type, 'text', id: 'input_type' %>
+            <div class="field-container">
+                <div class="label-container">
+                <%= label_tag :input_type, 'Input Type:' %>
+                </div>
+                <div class="input-container">
+                <%= select_tag :input_type, options_for_select([['Text', 'text'], ['File', 'file']], selected: params[:input_type]), id: 'input_text_select' %>
+                </div>
+            </div>
+            
+            <div class="field-container" id="dynamic_input_text_container">
+                <div class="label-container">
+                    <%= label_tag :text, 'Input Text:' %>
+                </div>
+                <div class="input-container">
+                    <%= text_area_tag :text, params[:text], class: 'plain-text', id: 'text_input' %>
+                </div>
+            </div>
+
+            <div class="field-container">
+                <div class="label-container">
+                <%= label_tag :mode, 'Mode:' %>
+                </div>
+                <div class="input-container">
+                <%= select_tag :mode, options_for_select([['ECB', 'ecb'], 
+                                                            ['CBC', 'cbc'], 
+                                                            ['OFB', 'ofb'],
+                                                            ['CFB', 'cfb'],
+                                                            ['Counter', 'counter'],
+                                                            ], selected: params[:mode]) %>
+                </div>
+            </div>
+            <div id="dynamic_key_container">
+                <div class="field-container">
+                    <div class="label-container">
+                    <%= label_tag :key, 'Key:' %>
+                    </div>
+                    <div class="input-container">
+                    <%= text_area_tag :key, params[:key], class: 'key-text' %>
+                    </div>
+                </div>
+            </div>
+            <div class="field-container buttons-container">
+                <%= button_tag(name: 'button_pressed', value: 'encrypt', type: 'submit') do %>
+                    Encrypt
+                <% end %>
+                <div class="spacer"></div>
+                <%= button_tag(name: 'button_pressed', value: 'decrypt', type: 'submit') do %>
+                    Decrypt
+                <% end %>
+            </div>
+            <% if @result %>
+            <div class="field-container result-container">
+                <div class="label-container">
+                    <%= label_tag :result, 'Result:' %>
+                </div>
+                <div class="output-container">
+                    <%=text_area_tag :result, @result, class: 'result-text', readonly: true %>
+                </div>
+
+            </div>
+            <div class="field-container">
+                <div class="label-container">
+                </div>
+                <div class="output-container">
+                    <%= link_to 'Download as binary', download_result_path(format: 'binary'), class: 'download-button' %>
+                </div>
+            </div>
+            <div class="field-container result-container">
+                <div class="label-container">
+                    <%= label_tag :result_base64, 'Result (Base64): ' %>
+                </div>
+                <div class="output-container">
+                    <%=text_area_tag :result_base64, @result_base64, class: 'result-text', readonly: true %>
+                </div>
+            </div>
+
+            <% end %>
+        <% end %>
+    </div>
+</html>

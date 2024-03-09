@@ -13,3 +13,90 @@
  *= require_tree .
  *= require_self
  */
+
+ .title {
+    text-align: center;
+}
+
+.form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.field-container {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1vw;
+}
+
+.plain-text {
+    width: 50vw;
+    resize: vertical;
+    min-height: 6vw;
+}
+
+.key-text {
+    width: 50vw;
+    resize: vertical;
+    min-height: 1.5vw;
+}
+
+.label-container {
+    width: 8vw;
+}
+
+.input-container {
+    margin-left: 5vw;
+}
+
+.output-container {
+    margin-left: 5vw;
+}
+
+.result-text {
+    width: 50vw;
+    resize: vertical;
+    min-height: 6vw;
+}
+
+.buttons-container {
+    justify-content: space-between;
+    margin-left: 13vw;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+button {
+    padding: 1vw 2vw;
+    cursor: pointer;
+}
+
+.download-button {
+    /* Text styling */
+    color: #ffffff; 
+    font-weight: bold; 
+  
+    /* Button styling */
+    background-color: #4CAF50; 
+    padding: 12px 24px; 
+    border-radius: 25px; 
+    border: none; 
+    cursor: pointer; 
+    text-decoration: none;
+    display: inline-block; 
+    transition: all 0.3s ease; 
+  
+    /* Box shadow for depth */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  }
+  
+  .download-button:hover, .download-button:focus {
+    /* Hover & focus styling for interactivity */
+    background-color: #45a049; 
+    color: #ffffff; 
+    text-decoration: none; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); 
+  }

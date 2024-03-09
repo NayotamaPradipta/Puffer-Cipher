@@ -1,0 +1,2 @@
+module KriptoHelper
+end
