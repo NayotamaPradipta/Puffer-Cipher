@@ -5,7 +5,13 @@ module Puffer
         BLOCK_SIZE = 16 # 16 bytes / 128 bits
 
         def initialize(key)
-            @key = key 
+            if key.bytesize < BLOCK_SIZE
+                @key = key.ljust(BLOCK_SIZE, "\x00")
+            elsif key.bytesize > BLOCK_SIZE
+                @key = key.byteslice(0, BLOCK_SIZE)
+            else 
+                @key = key 
+            end
         end 
 
         def encrypt(data)
@@ -20,6 +26,10 @@ module Puffer
 
         def pad(data)
             # Add padding if text block is less than 128 bit
+            padding_size = BLOCK_SIZE - (data.bytesize % BLOCK_SIZE)
+            padding_size = BLOCK_SIZE if padding_size == 0
+            padding = padding_size.chr(Encoding::ASCII_8BIT) * padding_size
+            data + padding 
         end
 
         def to_binary(data)

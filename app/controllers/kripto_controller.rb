@@ -45,7 +45,9 @@ class KriptoController < ApplicationController
   end
 
   def process_encryption(input_data)
-    @init_binary = string_to_binary(input_data)
+    @init_binary = string_to_binary(pad(input_data))
+    # Testing purposes
+    @init_key_binary = string_to_binary(update_key(params[:key]))
     @result = Kripto.encrypt(input_data, params[:mode], params[:key])
     @result_hex = @result.to_i(2).to_s(16)
     session[:mode] = params[:mode]
@@ -82,5 +84,26 @@ class KriptoController < ApplicationController
   def clean_up_file
     result_path = session[:result_path]
     File.delete(result_path) if result_path && File.exist?(result_path)
-  end 
+  end
+  # For testing purposes 
+  def update_key(key)
+    bs = 16
+    if key.bytesize < bs
+      key = key.ljust(bs, "\x00")
+    elsif key.bytesize > bs
+        key = key.byteslice(0, bs)
+    else 
+        key = key 
+    end
+  end
+
+  def pad(data)
+    # Add padding if text block is less than 128 bit
+    bs = 16
+    padding_size = bs - (data.bytesize % bs)
+    padding_size = bs if padding_size == 0
+    padding = padding_size.chr(Encoding::ASCII_8BIT) * padding_size
+    data + padding 
+  end
+
 end
