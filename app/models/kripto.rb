@@ -20,7 +20,7 @@ class Kripto
         when 'cfb'
             Puffer::Cfb.new(key)
         when 'counter'
-            Puiffer::Counter.new(key)
+            Puffer::Counter.new(key)
         else 
             nil 
         end 

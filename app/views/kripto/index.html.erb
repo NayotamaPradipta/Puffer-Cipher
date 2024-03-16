@@ -61,13 +61,39 @@
             <% if @result %>
             <div class="field-container result-container">
                 <div class="label-container">
-                    <%= label_tag :result, 'Result:' %>
+                    <%= label_tag :result, 'Initial Binary Content:' %>
+                </div>
+                <div class="output-container">
+                    <%=text_area_tag :init_binary, @init_binary, class: 'result-text', readonly: true %>
+                </div>
+
+            </div>
+            <div class="field-container result-container">
+                <div class="label-container">
+                    <%= label_tag :result, 'Result (Binary):' %>
                 </div>
                 <div class="output-container">
                     <%=text_area_tag :result, @result, class: 'result-text', readonly: true %>
                 </div>
-
             </div>
+            <div class="field-container result-container">
+                <div class="label-container">
+                    <%= label_tag :result_hex, 'Result (Hex): ' %>
+                </div>
+                <div class="output-container">
+                    <%=text_area_tag :result_hex, @result_hex, class: 'result-text', readonly: true %>
+                </div>
+            </div>
+            <% if params[:button_pressed] == 'decrypt' %>
+                <div class="field-container result-container">
+                    <div class="label-container">
+                        <%= label_tag :result_utf8, 'Result (UTF-8): ' %>
+                    </div>
+                    <div class="output-container">
+                        <%=text_area_tag :result_utf8, @result_utf8, class: 'result-text', readonly: true %>
+                    </div>
+                </div>
+            <% end %>
             <div class="field-container">
                 <div class="label-container">
                 </div>
@@ -75,15 +101,6 @@
                     <%= link_to 'Download as binary', download_result_path(format: 'binary'), class: 'download-button' %>
                 </div>
             </div>
-            <div class="field-container result-container">
-                <div class="label-container">
-                    <%= label_tag :result_base64, 'Result (Base64): ' %>
-                </div>
-                <div class="output-container">
-                    <%=text_area_tag :result_base64, @result_base64, class: 'result-text', readonly: true %>
-                </div>
-            </div>
-
             <% end %>
         <% end %>
     </div>

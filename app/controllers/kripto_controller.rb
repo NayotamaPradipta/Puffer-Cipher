@@ -27,9 +27,17 @@ class KriptoController < ApplicationController
 
   private 
 
+  def string_to_binary(str)
+    str.bytes.map { |b| b.to_s(2).rjust(8, '0')}.join
+  end
+
+  def result_to_utf8(binary_string)
+    utf8_text = binary_string.scan(/.{8}/).map { |byte| byte.to_i(2) }.pack('C*')
+    utf8_text.force_encoding('UTF-8')
+  end 
   def reset_session_variables
     session.delete(:result)
-    session.delete(:result_base64)
+    session.delete(:result_hex)
     session.delete(:result_path)
   end 
   def fetch_input_data 
@@ -37,14 +45,17 @@ class KriptoController < ApplicationController
   end
 
   def process_encryption(input_data)
+    @init_binary = string_to_binary(input_data)
     @result = Kripto.encrypt(input_data, params[:mode], params[:key])
-    @result_base64 = Base64.encode64(@result)
+    @result_hex = @result.to_i(2).to_s(16)
     session[:mode] = params[:mode]
     session[:action] = 'encrypt'
   end
   def process_decryption(input_data)
+    @init_binary = string_to_binary(input_data)
     @result = Kripto.decrypt(input_data, params[:mode], params[:key])
-    @result_base64 = Base64.encode64(@result)
+    @result_hex = @result.to_i(2).to_s(16)
+    @result_utf8 = result_to_utf8(@result)
     session[:mode] = params[:mode]
     session[:action] = 'decrypt'
   end

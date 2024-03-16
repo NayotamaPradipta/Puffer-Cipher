@@ -3,11 +3,13 @@ require_relative 'encryption_function'
 module Puffer
     class Ecb < BaseCipher
         def encrypt(text)
-            "Encrypted #{text} with key #{@key} in ECB mode"
+            binary = string_to_binary(text)
+            binary
         end
 
         def decrypt(text)
-            "Decrypted #{text} with key #{@key} in ECB mode"
+            binary = string_to_binary(text)
+            binary
         end
     end 
 end
