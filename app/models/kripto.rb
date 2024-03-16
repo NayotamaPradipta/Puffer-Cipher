@@ -1,35 +1,31 @@
 class Kripto
     def self.encrypt(text, mode, key)
-        case mode
-        when 'ecb'
-            Puffer::Ecb.encrypt(text, key)
-        when 'cbc'
-            Puffer::Cbc.encrypt(text, key)
-        when 'ofb'
-            Puffer::Ofb.encrypt(text, key)
-        when 'cfb'
-            Puffer::Cfb.encrypt(text, key)
-        when 'counter'
-            Puffer::Counter.encrypt(text, key)
-        else
-            "Unsupported Mode"
-        end
+        cipher = get_cipher(mode, key)
+        cipher ? cipher.encrypt(text) : "Unsupported Mode"
     end
 
     def self.decrypt(text, mode, key)
+        cipher = get_cipher(mode, key)
+        cipher ? cipher.decrypt(text) : "Unsupported Mode"
+    end
+
+    def self.get_cipher(mode, key)
         case mode
         when 'ecb'
-            Puffer::Ecb.decrypt(text, key)
+            Puffer::Ecb.new(key)
         when 'cbc'
-            Puffer::Cbc.decrypt(text, key)
+            Puffer::Cbc.new(key)
         when 'ofb'
-            Puffer::Ofb.decrypt(text, key)
+            Puffer::Ofb.new(key)
         when 'cfb'
-            Puffer::Cfb.decrypt(text, key)
+            Puffer::Cfb.new(key)
         when 'counter'
-            Puffer::Counter.decrypt(text, key)
-        else
-            "Unsupported Mode"
-        end
+            Puiffer::Counter.new(key)
+        else 
+            nil 
+        end 
     end
+            
+
+
 end

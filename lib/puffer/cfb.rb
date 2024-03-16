@@ -1,11 +1,13 @@
+require_relative 'base'
+require_relative 'encryption_function'
 module Puffer
-    class Cfb
-        def self.encrypt(text, key)
-            text
+    class Cfb < BaseCipher
+        def encrypt(text)
+            "Encrypted #{text} with key #{@key} in CFB mode"
         end
 
-        def self.decrypt(text, key)
-            text
+        def decrypt(text)
+            "Decrypted #{text} with key #{@key} in CFB mode"
         end
     end 
 end
