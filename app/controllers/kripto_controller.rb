@@ -1,81 +1,75 @@
 require 'base64'
 class KriptoController < ApplicationController
+  before_action :reset_session_variables, only: :process_kripto
+  after_action :clean_up_file, only: :download_result
   def process_kripto 
-    session.delete(:result) if session[:result].present?
-    session.delete(:result_base64) if session[:result_base64].present?
-    input_text = case params[:input_type] 
-                  when 'text' 
-                    params[:text]
-                  when 'file' 
-                    params[:file].read if params[:file].present?
-                  end
-
-
-
+    input_data = fetch_input_data
+    
     if params[:button_pressed] == 'encrypt'
-      @result = Kripto.encrypt(input_text, params[:mode], params[:key])
-      @result_base64 = Base64.encode64(@result)
-      session[:mode] = params[:mode]
-      session[:action] = 'encrypt'
-      if params[:input_type] == 'file'
-        session[:extension] = File.extname(params[:file].original_filename)
-      end
+      process_encryption(input_data)
     elsif params[:button_pressed] == 'decrypt'
-      @result = Kripto.decrypt(input_text, params[:mode], params[:key])
-      @result_base64 = Base64.encode64(@result)
-      session[:mode] = params[:mode]
-      session[:action] = 'decrypt'
+      process_decryption(input_data)
     end 
+
     if @result.blank?
       redirect_to root_path
     else 
-      # Get file extension
-      original_ext = File.extname(params[:file].original_filename) if params[:file].present?
-      # Generate unique file name
-      temp_filename = "kripto_#{SecureRandom.hex(10)}--ext--#{original_ext}"
-
-      file_path = Rails.root.join('tmp', temp_filename)
-
-      # Store file temporarily
-      File.binwrite(file_path, @result)
-      session[:result_path] = file_path.to_s
-
+      prepare_file_download
       render 'index' 
     end
   end
 
-  def download_result
+  def download_result 
     result_path = session[:result_path]
-  
+    filename = determine_filename
+    send_file_contents(result_path, filename, 'application/octet-stream')
+  end 
+
+  private 
+
+  def reset_session_variables
+    session.delete(:result)
+    session.delete(:result_base64)
+    session.delete(:result_path)
+  end 
+  def fetch_input_data 
+    params[:input_type] == 'text' ? params[:text] : params[:file]&.read
+  end
+
+  def process_encryption(input_data)
+    @result = Kripto.encrypt(input_data, params[:mode], params[:key])
+    @result_base64 = Base64.encode64(@result)
+    session[:mode] = params[:mode]
+    session[:action] = 'encrypt'
+  end
+  def process_decryption(input_data)
+    @result = Kripto.decrypt(input_data, params[:mode], params[:key])
+    @result_base64 = Base64.encode64(@result)
+    session[:mode] = params[:mode]
+    session[:action] = 'decrypt'
+  end
+
+  def prepare_file_download
+    temp_filename = "kripto_#{SecureRandom.hex(10)}.bin"
+    file_path = Rails.root.join('tmp', temp_filename)
+    File.binwrite(file_path, @result)
+    session[:result_path] = file_path.to_s
+  end 
+
+  def determine_filename
+    session[:action] == 'decrypt' ? "decrypted_file.bin" : "encrypted_file.bin"
+  end 
+
+  def send_file_contents(result_path, filename, content_type)
     if File.exist?(result_path)
-      if session[:action] == 'decrypt'
-        filename = "decrypted_file#{session[:extension]}"
-        
-      elsif session[:action] == 'encrypt'
-        encrypt_extension = params[:format] == 'binary' ? '.bin' : '.txt'
-        filename = "encrypted_file#{encrypt_extension}"
-      end
-
-      
-      content_type = determine_content_type(session[:cipher_type], params[:format])
-  
-      # Read the data from the file
-      file_data = File.binread(result_path)
-  
-      # Send the data as a download
-      send_data file_data, filename: filename, type: content_type
-
-      File.delete(result_path)
-    else
+      send_data File.binread(result_path), filename: filename, type: content_type
+    else 
       render plain: "No result detected"
-    end
-  end
-
-  def determine_content_type(cipher, format)
-    if format == 'binary'
-      'application/octet-stream'
-    else
-        'text/plain'
-    end
-  end
+    end 
+  end 
+  
+  def clean_up_file
+    result_path = session[:result_path]
+    File.delete(result_path) if result_path && File.exist?(result_path)
+  end 
 end
