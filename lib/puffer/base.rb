@@ -26,15 +26,12 @@ module Puffer
 
         def pad(data)
             # Add padding if text block is less than 128 bit
+            # Use PKCS#7
             padding_size = BLOCK_SIZE - (data.bytesize % BLOCK_SIZE)
             padding_size = BLOCK_SIZE if padding_size == 0
             padding = padding_size.chr(Encoding::ASCII_8BIT) * padding_size
             data + padding 
         end
-
-        def to_binary(data)
-            data.force_encoding('ASCII-8BIT')
-        end 
 
         def string_to_binary(str)
             str.bytes.map { |b| b.to_s(2).rjust(8, '0')}.join
