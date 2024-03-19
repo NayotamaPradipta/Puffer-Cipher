@@ -101,6 +101,14 @@
                     </div>
                 </div>
             <% end %>
+            <div class="field-container result-container">
+                <div class="label-container">
+                    <%= label_tag :exec_time, 'Execution time (s): ' %>
+                </div>
+                <div class="output-container">
+                    <%=text_area_tag :exec_time, @exec_time, class: 'key-text', readonly: true %>
+                </div>
+            </div>
             <div class="field-container">
                 <div class="label-container">
                 </div>
