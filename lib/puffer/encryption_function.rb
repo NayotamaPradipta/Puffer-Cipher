@@ -1,11 +1,23 @@
 module EncryptionFunction
     # Modul untuk fungsi yang sama untuk semua mode 
-    
+    BLOCK_SIZE = 16
     def self.f_function(block, key)
         # TODO: Initialize P-array, S-boxes with Hexadecimal euler
         #       Implement Key Scheduling Algorithm
-        #       Implement Feistel Network
-        block ^ key
+        left, right = block[0...64], block[64..-1]
+        left = left.to_i(2)
+        right = right.to_i(2)
+
+        16.times do |round|
+            transform_right = transform(right, key, round)
+            new_right = left ^ transform_right
+            left = right 
+            right = new_right
+        end 
+        
+        left = left.to_s(2).rjust(64, '0')
+        right = right.to_s(2).rjust(64, '0')
+        left + right
     end 
 
     def self.initialize_s_box()
@@ -56,6 +68,12 @@ module EncryptionFunction
         end   
     end
 
+    def self.transform(data, key, round)
+        # Try simple transform function 
+        # Use first 64 bit of the key
+        data ^ key[0...64].to_i(2)
+    end
+    
     def self.s_boxes 
         @s_boxes
     end 

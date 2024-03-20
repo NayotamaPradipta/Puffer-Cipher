@@ -25,7 +25,4 @@ class Kripto
             nil 
         end 
     end
-            
-
-
 end

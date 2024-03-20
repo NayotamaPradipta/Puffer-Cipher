@@ -50,7 +50,7 @@ class KriptoController < ApplicationController
     # Testing purposes
     @init_key_binary = string_to_binary(update_key(params[:key]))
     @result = Kripto.encrypt(input_data, params[:mode], params[:key])
-    @result_hex = @result.to_i(2).to_s(16)
+    # @result_hex = @result.to_i(2).to_s(16)
     t_end = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     @exec_time = t_end - t_start
     session[:mode] = params[:mode]

@@ -36,5 +36,10 @@ module Puffer
         def string_to_binary(str)
             str.bytes.map { |b| b.to_s(2).rjust(8, '0')}.join
         end
+        
+        def binary_to_string(binary)
+            [binary].pack('B*')
+        end
+
     end 
 end
