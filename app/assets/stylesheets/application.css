@@ -1,102 +1,99 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require_tree .
- *= require_self
- */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&family=Rubik:wght@400;700&display=swap');
 
- .title {
+body {
+    font-family: 'Roboto Mono', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1D1D1D;
+    color: #FFFFFF;
+    text-shadow: 0 0 10px #FFFFFF;
+}
+
+.title {
     text-align: center;
+    font-family: 'Roboto Mono', sans-serif;
+    margin-top: 2vw;
+    font-size: 2em;
+    color: #2722FF;
+    text-shadow: 0 0 20px #2722FF;
+
 }
 
 .form-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 2vw;
 }
 
 .field-container {
     display: flex;
     flex-direction: row;
     margin-bottom: 1vw;
+    align-items: flex-start; 
 }
 
-.plain-text {
+.plain-text, .key-text, .result-text {
     width: 50vw;
     resize: vertical;
     min-height: 6vw;
-}
-
-.key-text {
-    width: 50vw;
-    resize: vertical;
-    min-height: 1.5vw;
+    border: 1px solid #ccc;
+    border-radius: 4px; 
+    padding: 10px;
+    margin-top: 0.5vw;
+    background-color: #020072;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px #020072;
+    box-shadow: 0 0 15px #020072;
+    font-family: 'Roboto Mono', sans-serif;
 }
 
 .label-container {
     width: 8vw;
+    font-weight: 700; 
 }
 
-.input-container {
+.input-container, .output-container {
     margin-left: 5vw;
-}
-
-.output-container {
-    margin-left: 5vw;
-}
-
-.result-text {
-    width: 50vw;
-    resize: vertical;
-    min-height: 6vw;
 }
 
 .buttons-container {
+    display: flex;
     justify-content: space-between;
     margin-left: 13vw;
 }
 
-.spacer {
-    flex-grow: 1;
-}
-
-button {
+button, .download-button {
     padding: 1vw 2vw;
     cursor: pointer;
+    font-family: 'Roboto Mono', sans-serif; 
+    font-size: 1em;
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 25px;
+    background-color: #2722FF;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px #2722FF;
+    box-shadow: 0 0 15px #2722FF;
 }
 
 .download-button {
-    /* Text styling */
-    color: #ffffff; 
-    font-weight: bold; 
-  
-    /* Button styling */
-    background-color: #4CAF50; 
-    padding: 12px 24px; 
-    border-radius: 25px; 
-    border: none; 
-    cursor: pointer; 
     text-decoration: none;
-    display: inline-block; 
-    transition: all 0.3s ease; 
-  
-    /* Box shadow for depth */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-  }
-  
-  .download-button:hover, .download-button:focus {
-    /* Hover & focus styling for interactivity */
-    background-color: #45a049; 
-    color: #ffffff; 
-    text-decoration: none; 
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); 
-  }
+    display: flex;
+}
+
+button:hover, button:focus {
+    background-color: #6c6aff;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.download-button:hover, .download-button:focus {
+    background-color: #6c6aff;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+select {
+    font-family: 'Roboto Mono', sans-serif; 
+    background-color: #2722FF;
+    color: #FFFFFF
+}
