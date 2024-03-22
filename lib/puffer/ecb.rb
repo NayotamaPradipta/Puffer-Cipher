@@ -8,8 +8,7 @@ module Puffer
             PufferFunction.initialize_s_box(@key)
             encrypted_blocks = padded_text.chars.each_slice(BLOCK_SIZE).map(&:join).map do |block|
                 block_binary = string_to_binary(block)
-                key_binary = string_to_binary(@key)
-                encrypted_binary = PufferFunction.f_function_encrypt(block_binary, key_binary)
+                encrypted_binary = PufferFunction.f_function_encrypt(block_binary, key)
             end
             encrypted_blocks.join
         end
@@ -20,8 +19,7 @@ module Puffer
             binary_data = base64_to_binary(base64_text)
             puts "BINARY DATA: #{binary_data}"
             decrypted_blocks = binary_data.chars.each_slice(BLOCK_SIZE*8).map(&:join).map do |block|
-                key_binary = string_to_binary(@key)
-                decrypted_binary = PufferFunction.f_function_decrypt(block, key_binary)
+                decrypted_binary = PufferFunction.f_function_decrypt(block, key)
             end 
             decrypted_blocks.join
         end

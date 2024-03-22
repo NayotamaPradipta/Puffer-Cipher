@@ -105,7 +105,8 @@ module PufferFunction
         sections.each_with_index do |section, index|
             s_box_index = (index + round + 2) % @s_boxes.length
             s_box_value = @s_boxes[s_box_index][section]
-            result = (result << 8) | s_box_value
+            permuted_value = permute(s_box_value, key)
+            result = (result << 8) | permuted_value
         end 
         puts "Sections: #{sections}"
         puts "S-BOX: #{@s_boxes}"
@@ -116,6 +117,27 @@ module PufferFunction
         return mixed_result
     end
     
+    def self.generate_permutation_pattern(key)
+        seed = key.bytes.sum
+        puts "KEY BYTES: #{key.bytes}"
+        puts "KEY: #{key}"
+        puts "SEED: #{seed}"
+        prng = Random.new(seed)
+        pattern = (0...8).to_a
+        key_dependent_pattern = pattern.shuffle(random: prng)
+        key_dependent_pattern
+    end
+
+    def self.permute(section, key)
+        permutation_pattern = generate_permutation_pattern(key)
+        permuted_section = 0
+        permutation_pattern.each_with_index do |new_position, index|
+            bit = (section >> index) & 1
+            permuted_section |= bit << new_position
+        end
+        permuted_section
+    end
+
     def self.s_boxes 
         @s_boxes
     end 
