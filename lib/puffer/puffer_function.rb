@@ -108,10 +108,10 @@ module PufferFunction
             permuted_value = permute(s_box_value, key)
             result = (result << 8) | permuted_value
         end 
-        puts "Sections: #{sections}"
-        puts "S-BOX: #{@s_boxes}"
-        puts "RESULT: #{result}"
-        puts "P_ARRAY: #{self.p_array[round]}"
+        # puts "Sections: #{sections}"
+        # puts "S-BOX: #{@s_boxes}"
+        # puts "RESULT: #{result}"
+        # puts "P_ARRAY: #{self.p_array[round]}"
         mixed_result = result ^ self.p_array[round+2]
 
         return mixed_result
@@ -119,9 +119,9 @@ module PufferFunction
     
     def self.generate_permutation_pattern(key)
         seed = key.bytes.sum
-        puts "KEY BYTES: #{key.bytes}"
-        puts "KEY: #{key}"
-        puts "SEED: #{seed}"
+        # puts "KEY BYTES: #{key.bytes}"
+        # puts "KEY: #{key}"
+        # puts "SEED: #{seed}"
         prng = Random.new(seed)
         pattern = (0...8).to_a
         key_dependent_pattern = pattern.shuffle(random: prng)

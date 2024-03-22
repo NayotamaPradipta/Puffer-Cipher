@@ -40,8 +40,14 @@ class KriptoController < ApplicationController
     session.delete(:result_hex)
     session.delete(:result_path)
   end 
-  def fetch_input_data 
-    params[:input_type] == 'text' ? params[:text] : params[:file]&.read
+  def fetch_input_data
+    if params[:input_type] == 'text' && params[:button_pressed] == 'decrypt'
+      params[:text]
+    elsif params[:input_type] == 'text' && params[:button_pressed] == 'encrypt'
+      Base64.strict_encode64(params[:text])
+    elsif params[:input_type] == 'file' && params[:file].present?
+      Base64.strict_encode64(File.binread(params[:file].tempfile.path))
+    end
   end
 
   def process_encryption(input_data)
@@ -49,7 +55,8 @@ class KriptoController < ApplicationController
     @init_binary = string_to_binary(pad(input_data))
     # Testing purposes
     @init_key_binary = string_to_binary(update_key(params[:key]))
-    
+    input_data = Base64.strict_decode64(input_data)
+    puts "INPUT_DATA: #{input_data}"
     @result = Kripto.encrypt(input_data, params[:mode], params[:key])
     @result_hex = @result.to_i(2).to_s(16)
     @result_base64 = Base64.strict_encode64([@result].pack('B*'))
@@ -78,7 +85,7 @@ class KriptoController < ApplicationController
   def prepare_file_download
     temp_filename = "kripto_#{SecureRandom.hex(10)}.bin"
     file_path = Rails.root.join('tmp', temp_filename)
-    File.binwrite(file_path, @result)
+    File.binwrite(file_path, [@result].pack('B*'))
     session[:result_path] = file_path.to_s
   end 
 
