@@ -91,6 +91,14 @@
                     <%=text_area_tag :result_hex, @result_hex, class: 'result-text', readonly: true %>
                 </div>
             </div>
+            <div class="field-container result-container">
+                <div class="label-container">
+                    <%= label_tag :result_base64, 'Result (Base64): ' %>
+                </div>
+                <div class="output-container">
+                    <%=text_area_tag :result_base64, @result_base64, class: 'result-text', readonly: true %>
+                </div>
+            </div>
             <% if params[:button_pressed] == 'decrypt' %>
                 <div class="field-container result-container">
                     <div class="label-container">

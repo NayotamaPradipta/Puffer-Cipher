@@ -1,13 +1,16 @@
-module EncryptionFunction
+module PufferFunction
     # Modul untuk fungsi yang sama untuk semua mode 
     BLOCK_SIZE = 16
-    def self.f_function(block, key)
+    def self.f_function_encrypt(block, key)
         # TODO: Initialize P-array, S-boxes with Hexadecimal euler
         #       Implement Key Scheduling Algorithm
         left, right = block[0...64], block[64..-1]
         left = left.to_i(2)
         right = right.to_i(2)
-
+        # XOR Left with P1, XOR Right with P2
+        left ^= self.p_array[0]
+        right ^= self.p_array[1]
+        # Feistel Network 16-round Iterated Cipher
         16.times do |round|
             transform_right = transform(right, key, round)
             new_right = left ^ transform_right
@@ -19,6 +22,31 @@ module EncryptionFunction
         right = right.to_s(2).rjust(64, '0')
         left + right
     end 
+
+    def self.f_function_decrypt(block, key)
+        puts "BLOCK: #{block}"
+        left, right = block[0...64], block[64..-1]
+        puts "Left: #{left}"
+        puts "Right: #{right}"
+        left = left.to_i(2)
+        right = right.to_i(2)
+
+        16.times do |round|
+            round = 15 - round 
+            transform_left = transform(left, key, round)
+            new_left = right ^ transform_left
+            right = left 
+            left = new_left 
+        end 
+
+        right ^= self.p_array[1]
+        left ^= self.p_array[0]
+
+        left = left.to_s(2).rjust(64, '0')
+        right = right.to_s(2).rjust(64, '0')
+        left + right
+    end
+
 
     def self.initialize_s_box()
         @s_boxes = Array.new(8) {Array.new(256)}
@@ -43,35 +71,31 @@ module EncryptionFunction
         @p_array = Array.new(18) {Array.new(8)}
 
         p_array_hex_values = [
-            "674127b6",
-            "891de54f",
-            "d0e45e69",
-            "41625803",
-            "d126c395",
-            "0c0dbf72",
-            "b629a9d2",
-            "a6eecf4c",
-            "04f4deba",
-            "c84ffb85",
-            "3b81801b",
-            "3d9dbd19",
-            "1c0048f3",
-            "c10c1b7c",
-            "035f79e4",
-            "d62712a9",
-            "99c5c6a6",
-            "cf47d5c3"
+            "674127b6", "891de54f", "d0e45e69", "41625803",
+            "d126c395", "0c0dbf72", "b629a9d2", "a6eecf4c",
+            "04f4deba", "c84ffb85", "3b81801b", "3d9dbd19",
+            "1c0048f3", "c10c1b7c", "035f79e4", "d62712a9",
+            "99c5c6a6", "cf47d5c3"
         ]
 
-        @p_array = p_array_hex_values.map do |hex_values|
-            hex_values.scan(/../).map { |hex_pair| hex_pair.to_i(16) }
-        end   
+        @p_array = p_array_hex_values.map { |hex_value| hex_value.to_i(16) }
     end
 
-    def self.transform(data, key, round)
-        # Try simple transform function 
-        # Use first 64 bit of the key
-        data ^ key[0...64].to_i(2)
+    def self.transform(data, key, round)  
+        # Divide into 8 sections 
+        # Each section contains 8 bits --> 1 section to 1 S-box  
+        sections = 8.times.map { |i| (data >> (56 - 8*i)) & 0xff }
+
+        # S-box lookup
+        s_box_result = sections.each_with_index.reduce(0) do | acc, (section, index) | 
+            # Simple XOR with all 8 S-boxes
+            acc ^ self.s_boxes[index][section]
+        end
+        puts "S_BOX_RESULT: #{s_box_result}"
+        puts "P_ARRAY: #{self.p_array[round]}"
+        mixed_result = s_box_result ^ self.p_array[round+2]
+
+        return mixed_result
     end
     
     def self.s_boxes 

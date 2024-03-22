@@ -1,3 +1,4 @@
+require 'base64'
 module Puffer
     class BaseCipher 
         attr_reader :key 
@@ -34,11 +35,17 @@ module Puffer
         end
 
         def string_to_binary(str)
+            # Returns binary string
             str.bytes.map { |b| b.to_s(2).rjust(8, '0')}.join
         end
         
         def binary_to_string(binary)
             [binary].pack('B*')
+        end
+
+        def base64_to_binary(str)
+            binary = Base64.strict_decode64(str)
+            return string_to_binary(binary)
         end
 
     end 
