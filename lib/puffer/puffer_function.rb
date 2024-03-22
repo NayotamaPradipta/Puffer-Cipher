@@ -48,8 +48,8 @@ module PufferFunction
     end
 
 
-    def self.initialize_s_box()
-        @s_boxes = Array.new(8) {Array.new(256)}
+    def self.initialize_s_box(key)
+        key_bytes = key.bytes
 
         s_box_hex_values = [
             "b7e151628aed2a6abf7158809cf4f3c762e7160f38b4da56a784d9045190cfef324e7738926cfbe5f4bf8d8d8c31d763da06c80abb1185eb4f7c7b5757f5958490cfd47d7c19bb42158d9554f7b46bced55c4d79fd5f24d6613c31c3839a2ddf8a9a276bcfbfa1c877c56284dab79cd4c2b3293d20e9e5eaf02ac60acc93ed874422a52ecb238feee5ab6add835fd1a0753d0a8f78e537d2b95bb79d8dcaec642c1e9f23b829b5c2780bf38737df8bb300d01334a0d0bd8645cbfa73a6160ffe393c48cbbbca060f0ff8ec6d31beb5cceed7f2f0bb088017163bc60df45a0ecb1bcd289b06cbbfea21ad08e1847f3f7378d56ced94640d6ef0d3d37be67008e1",
@@ -64,11 +64,19 @@ module PufferFunction
 
         @s_boxes = s_box_hex_values.map do |hex_values|
             hex_values.scan(/../).map { |hex_pair| hex_pair.to_i(16) }
-        end     
+        end   
+        repeat_key = key_bytes.cycle.take(@s_boxes.flatten.length)
+
+        @s_boxes.map!.with_index do |s_box, i|
+            s_box.map.with_index do |value, j|
+                key_byte = repeat_key[i*256+j]
+                value ^ key_byte
+            end 
+        end 
     end 
 
-    def self.initialize_p_array()
-        @p_array = Array.new(18) {Array.new(8)}
+    def self.initialize_p_array(key)
+        key_bytes = key.bytes
 
         p_array_hex_values = [
             "674127b6", "891de54f", "d0e45e69", "41625803",
@@ -79,21 +87,31 @@ module PufferFunction
         ]
 
         @p_array = p_array_hex_values.map { |hex_value| hex_value.to_i(16) }
+        
+        repeat_key = key_bytes.cycle.take(@p_array.length * 4)
+        @p_array.map!.with_index do |p_element, index|
+            key_segment = repeat_key[index*4, 4]
+            key_value = key_segment.pack('C*').unpack1('N')
+            p_element ^ key_value
+        end
     end
 
     def self.transform(data, key, round)  
         # Divide into 8 sections 
         # Each section contains 8 bits --> 1 section to 1 S-box  
-        sections = 8.times.map { |i| (data >> (56 - 8*i)) & 0xff }
-
+        sections = 8.times.map { |i| (data >> (56 - 8*i)) & 0xFF }
+        result = 0
         # S-box lookup
-        s_box_result = sections.each_with_index.reduce(0) do | acc, (section, index) | 
-            # Simple XOR with all 8 S-boxes
-            acc ^ self.s_boxes[index][section]
-        end
-        puts "S_BOX_RESULT: #{s_box_result}"
+        sections.each_with_index do |section, index|
+            s_box_index = (index + round + 2) % @s_boxes.length
+            s_box_value = @s_boxes[s_box_index][section]
+            result = (result << 8) | s_box_value
+        end 
+        puts "Sections: #{sections}"
+        puts "S-BOX: #{@s_boxes}"
+        puts "RESULT: #{result}"
         puts "P_ARRAY: #{self.p_array[round]}"
-        mixed_result = s_box_result ^ self.p_array[round+2]
+        mixed_result = result ^ self.p_array[round+2]
 
         return mixed_result
     end

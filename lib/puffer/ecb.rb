@@ -4,8 +4,8 @@ module Puffer
     class Ecb < BaseCipher
         def encrypt(text)
             padded_text = pad(text)
-            PufferFunction.initialize_p_array()
-            PufferFunction.initialize_s_box()
+            PufferFunction.initialize_p_array(@key)
+            PufferFunction.initialize_s_box(@key)
             encrypted_blocks = padded_text.chars.each_slice(BLOCK_SIZE).map(&:join).map do |block|
                 block_binary = string_to_binary(block)
                 key_binary = string_to_binary(@key)
@@ -15,8 +15,8 @@ module Puffer
         end
 
         def decrypt(base64_text)
-            PufferFunction.initialize_p_array()
-            PufferFunction.initialize_s_box()
+            PufferFunction.initialize_p_array(@key)
+            PufferFunction.initialize_s_box(@key)
             binary_data = base64_to_binary(base64_text)
             puts "BINARY DATA: #{binary_data}"
             decrypted_blocks = binary_data.chars.each_slice(BLOCK_SIZE*8).map(&:join).map do |block|
