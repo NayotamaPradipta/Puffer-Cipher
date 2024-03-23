@@ -52,9 +52,6 @@ class KriptoController < ApplicationController
 
   def process_encryption(input_data)
     t_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    @init_binary = string_to_binary(pad(input_data))
-    # Testing purposes
-    @init_key_binary = string_to_binary(update_key(params[:key]))
     input_data = Base64.strict_decode64(input_data)
     puts "INPUT_DATA: #{input_data}"
     @result = Kripto.encrypt(input_data, params[:mode], params[:key])
@@ -68,10 +65,6 @@ class KriptoController < ApplicationController
   end
   def process_decryption(input_data)
     t_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    @init_binary = string_to_binary(input_data)
-    # Testing purposes
-    @init_key_binary = string_to_binary(update_key(params[:key]))
-
     @result = Kripto.decrypt(input_data, params[:mode], params[:key])
     @result_hex = @result.to_i(2).to_s(16)
     @result_base64 = Base64.strict_encode64([@result].pack('B*'))

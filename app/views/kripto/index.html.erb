@@ -61,22 +61,6 @@
             <% if @result %>
             <div class="field-container result-container">
                 <div class="label-container">
-                    <%= label_tag :result, 'Initial Binary Content:' %>
-                </div>
-                <div class="output-container">
-                    <%=text_area_tag :init_binary, @init_binary, class: 'result-text', readonly: true %>
-                </div>
-            </div>
-            <div class="field-container result-container">
-                <div class="label-container">
-                    <%= label_tag :result, 'Key (Binary):' %>
-                </div>
-                <div class="output-container">
-                    <%=text_area_tag :init_key_binary, @init_key_binary, class: 'result-text', readonly: true %>
-                </div>
-            </div>
-            <div class="field-container result-container">
-                <div class="label-container">
                     <%= label_tag :result, 'Result (Binary):' %>
                 </div>
                 <div class="output-container">
