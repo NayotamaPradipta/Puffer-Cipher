@@ -1,5 +1,5 @@
 module PufferFunction
-    # Modul untuk fungsi yang sama untuk semua mode 
+    # Modul untuk fungsi yang sama untuk semua mode
     BLOCK_SIZE = 16
     def self.f_function_encrypt(block, key)
         # TODO: Initialize P-array, S-boxes with Hexadecimal euler
@@ -14,14 +14,14 @@ module PufferFunction
         16.times do |round|
             transform_right = transform(right, key, round)
             new_right = left ^ transform_right
-            left = right 
+            left = right
             right = new_right
-        end 
-        
+        end
+
         left = left.to_s(2).rjust(64, '0')
         right = right.to_s(2).rjust(64, '0')
         left + right
-    end 
+    end
 
     def self.f_function_decrypt(block, key)
         puts "BLOCK: #{block}"
@@ -32,12 +32,12 @@ module PufferFunction
         right = right.to_i(2)
 
         16.times do |round|
-            round = 15 - round 
+            round = 15 - round
             transform_left = transform(left, key, round)
             new_left = right ^ transform_left
-            right = left 
-            left = new_left 
-        end 
+            right = left
+            left = new_left
+        end
 
         right ^= self.p_array[1]
         left ^= self.p_array[0]
@@ -64,16 +64,16 @@ module PufferFunction
 
         @s_boxes = s_box_hex_values.map do |hex_values|
             hex_values.scan(/../).map { |hex_pair| hex_pair.to_i(16) }
-        end   
+        end
         repeat_key = key_bytes.cycle.take(@s_boxes.flatten.length)
 
         @s_boxes.map!.with_index do |s_box, i|
             s_box.map.with_index do |value, j|
                 key_byte = repeat_key[i*256+j]
                 value ^ key_byte
-            end 
-        end 
-    end 
+            end
+        end
+    end
 
     def self.initialize_p_array(key)
         key_bytes = key.bytes
@@ -87,7 +87,7 @@ module PufferFunction
         ]
 
         @p_array = p_array_hex_values.map { |hex_value| hex_value.to_i(16) }
-        
+
         repeat_key = key_bytes.cycle.take(@p_array.length * 4)
         @p_array.map!.with_index do |p_element, index|
             key_segment = repeat_key[index*4, 4]
@@ -96,9 +96,9 @@ module PufferFunction
         end
     end
 
-    def self.transform(data, key, round)  
-        # Divide into 8 sections 
-        # Each section contains 8 bits --> 1 section to 1 S-box  
+    def self.transform(data, key, round)
+        # Divide into 8 sections
+        # Each section contains 8 bits --> 1 section to 1 S-box
         sections = 8.times.map { |i| (data >> (56 - 8*i)) & 0xFF }
         result = 0
         # S-box lookup
@@ -107,7 +107,7 @@ module PufferFunction
             s_box_value = @s_boxes[s_box_index][section]
             permuted_value = permute(s_box_value, key)
             result = (result << 8) | permuted_value
-        end 
+        end
         # puts "Sections: #{sections}"
         # puts "S-BOX: #{@s_boxes}"
         # puts "RESULT: #{result}"
@@ -116,7 +116,7 @@ module PufferFunction
 
         return mixed_result
     end
-    
+
     def self.generate_permutation_pattern(key)
         seed = key.bytes.sum
         # puts "KEY BYTES: #{key.bytes}"
@@ -138,12 +138,12 @@ module PufferFunction
         permuted_section
     end
 
-    def self.s_boxes 
+    def self.s_boxes
         @s_boxes
-    end 
+    end
 
-    def self.p_array 
+    def self.p_array
         @p_array
-    end 
+    end
 
-end 
+end

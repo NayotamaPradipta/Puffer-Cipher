@@ -20,8 +20,8 @@ module Puffer
             puts "BINARY DATA: #{binary_data}"
             decrypted_blocks = binary_data.chars.each_slice(BLOCK_SIZE*8).map(&:join).map do |block|
                 decrypted_binary = PufferFunction.f_function_decrypt(block, key)
-            end 
+            end
             decrypted_blocks.join
         end
-    end 
+    end
 end
