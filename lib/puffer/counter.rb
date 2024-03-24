@@ -8,12 +8,14 @@ module Puffer
             PufferFunction.initialize_s_box(@key)
             counter = generate_counter(key)
             puts "counter innit: #{counter}"
-
-            encrypted_blocks = padded_text.chars.each_slice(BLOCK_SIZE).map(&:join).map do |block|
+            total_blocks = padded_text.chars.each_slice(BLOCK_SIZE).map(&:join).size
+            encrypted_blocks = padded_text.chars.each_slice(BLOCK_SIZE).map(&:join).each_with_index.map do |block, index|
                 block_encryptor = PufferFunction.f_function_encrypt(counter, key)
                 block_binary = string_to_binary(block)
                 counter = update(counter)
                 encrypted_block = xor_blocks(block_encryptor, block_binary)
+                puts "Encrypted block #{index+1} of #{total_blocks}"
+                encrypted_block
             end
             encrypted_blocks.join
         end
@@ -24,11 +26,13 @@ module Puffer
             binary_data = base64_to_binary(base64_text)
             counter = generate_counter(key)
             puts "counter innit: #{counter}"
-
-            decrypted_blocks = binary_data.chars.each_slice(BLOCK_SIZE*8).map(&:join).map do |block|
+            total_blocks = binary_data.chars.each_slice(BLOCK_SIZE*8).map(&:join).size
+            decrypted_blocks = binary_data.chars.each_slice(BLOCK_SIZE*8).map(&:join).each_with_index.map do |block, index|
                 block_decryptor = PufferFunction.f_function_encrypt(counter, key)
                 counter = update(counter)
                 decrypted_block = xor_blocks(block_decryptor, block)
+                puts "Decrypted block #{index+1} of #{total_blocks}"
+                decrypted_block
             end
             decrypted_blocks.join
         end

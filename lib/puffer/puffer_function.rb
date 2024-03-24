@@ -24,10 +24,10 @@ module PufferFunction
     end
 
     def self.f_function_decrypt(block, key)
-        puts "BLOCK: #{block}"
+        # puts "BLOCK: #{block}"
         left, right = block[0...64], block[64..-1]
-        puts "Left: #{left}"
-        puts "Right: #{right}"
+        # puts "Left: #{left}"
+        # puts "Right: #{right}"
         left = left.to_i(2)
         right = right.to_i(2)
 

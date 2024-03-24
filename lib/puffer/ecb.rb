@@ -6,9 +6,12 @@ module Puffer
             padded_text = pad(text)
             PufferFunction.initialize_p_array(@key)
             PufferFunction.initialize_s_box(@key)
-            encrypted_blocks = padded_text.chars.each_slice(BLOCK_SIZE).map(&:join).map do |block|
+            total_blocks = padded_text.chars.each_slice(BLOCK_SIZE).map(&:join).size
+            encrypted_blocks = padded_text.chars.each_slice(BLOCK_SIZE).map(&:join).each_with_index.map do |block,index|
                 block_binary = string_to_binary(block)
                 encrypted_binary = PufferFunction.f_function_encrypt(block_binary, key)
+                puts "Encrypted block #{index+1} of #{total_blocks}"
+                encrypted_binary
             end
             encrypted_blocks.join
         end
@@ -17,9 +20,12 @@ module Puffer
             PufferFunction.initialize_p_array(@key)
             PufferFunction.initialize_s_box(@key)
             binary_data = base64_to_binary(base64_text)
-            puts "BINARY DATA: #{binary_data}"
-            decrypted_blocks = binary_data.chars.each_slice(BLOCK_SIZE*8).map(&:join).map do |block|
+            # puts "BINARY DATA: #{binary_data}"
+            total_blocks = binary_data.chars.each_slice(BLOCK_SIZE*8).map(&:join).size
+            decrypted_blocks = binary_data.chars.each_slice(BLOCK_SIZE*8).map(&:join).each_with_index.map do |block,index|
                 decrypted_binary = PufferFunction.f_function_decrypt(block, key)
+                puts "Decrypted block #{index+1} of #{total_blocks}"
+                decrypted_binary
             end
             decrypted_blocks.join
         end
