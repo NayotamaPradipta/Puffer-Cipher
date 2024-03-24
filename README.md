@@ -13,4 +13,4 @@ Repository ini berisi web app kriptografi menggunakan framework Ruby on Rails ya
 Untuk menjalankan aplikasi ini, pastikan ruby dan rails telah di install. Program dapat dijalankan dengan perintah ```rails server``` pada root folder, dan aplikasi dapat dijalankan melalui alamat ```https://localhost:3000```
 
 ## Enkripsi/Dekripsi
-Website dapat menerima input dalam bentuk input dari user ataupun file. Input user untuk dekripsi hanya support dalam format Base64. Hasil enkripsi dan dekripsi dapat di download menghasilkan file biner. Ekstensi hasil dekripsi dapat diubah disesuaikan dengan ekstensi awal.
+Website dapat menerima input dalam bentuk input text dari user ataupun file. Input text untuk dekripsi hanya support dalam format Base64. Hasil enkripsi dan dekripsi dapat di download dalam format file biner. 
