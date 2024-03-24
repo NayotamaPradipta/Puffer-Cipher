@@ -8,6 +8,7 @@
             <%= hidden_field_tag :text_cache, params[:text], id: 'text_cache' %>
             <%= hidden_field_tag :key_cache, params[:key],  id: 'key_cache' %>
             <%= hidden_field_tag :input_type, 'text', id: 'input_type' %>
+            <%= hidden_field_tag :mode_type, params[:mode], id: 'mode_type' %>
             <div class="field-container">
                 <div class="label-container">
                 <%= label_tag :input_type, 'Input Type:' %>
@@ -26,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="field-container">
+            <div class="field-container" id="dynamic_mode_container">
                 <div class="label-container">
                 <%= label_tag :mode, 'Mode:' %>
                 </div>
@@ -36,7 +37,7 @@
                                                             ['OFB', 'ofb'],
                                                             ['CFB', 'cfb'],
                                                             ['Counter', 'counter'],
-                                                            ], selected: params[:mode]) %>
+                                                            ], selected: params[:mode]), id: 'mode_select' %>
                 </div>
             </div>
             <div id="dynamic_key_container">
