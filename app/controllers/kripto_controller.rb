@@ -46,6 +46,7 @@ class KriptoController < ApplicationController
     elsif params[:input_type] == 'text' && params[:button_pressed] == 'encrypt'
       Base64.strict_encode64(params[:text])
     elsif params[:input_type] == 'file' && params[:file].present?
+      session[:original_filename] = params[:file].original_filename
       Base64.strict_encode64(File.binread(params[:file].tempfile.path))
     end
   end
@@ -83,7 +84,13 @@ class KriptoController < ApplicationController
   end 
 
   def determine_filename
-    session[:action] == 'decrypt' ? "decrypted_file.bin" : "encrypted_file.bin"
+    if session[:action] == 'encrypt' && session[:original_filename]
+      original_filename_base = File.basename(session[:original_filename], ".*")
+      "#{original_filename_base}_ENCRYPTED.bin"
+    elsif session[:action] == 'decrypt'
+      original_filename_base = File.basename(session[:original_filename], ".*")
+      "#{original_filename_base}_DECRYPTED.bin"
+    end
   end 
 
   def send_file_contents(result_path, filename, content_type)

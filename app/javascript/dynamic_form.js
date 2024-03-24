@@ -2,19 +2,6 @@ document.addEventListener('turbo:load', () => {
     const inputTypeSelect = document.getElementById('input_text_select');
     // Add textCache to save input text value after reload
     const textCache = document.getElementById('text_cache').value;
-  
-    const validateFileExtension = () => {
-      const fileInput = document.getElementById('file_input');
-      
-      if (fileInput && fileInput.files.length > 0) {
-        const fileName = fileInput.files[0].name;
-        const fileExt = fileName.split('.').pop().toLowerCase();
-        if ( fileExt !== 'bin') {
-          alert('Only .bin files are allowed for this cipher.');
-          fileInput.value = ''; // Reset the file input
-        }
-      }
-    };
     
     const updateDynamicField = (selection, dynamic_element) => {
       if (dynamic_element.id === 'dynamic_input_text_container'){
@@ -41,11 +28,6 @@ document.addEventListener('turbo:load', () => {
         } 
       }
     };
-
-    const fileInput = document.getElementById('file_input');
-    if (fileInput) {
-      fileInput.addEventListener('change', validateFileExtension);
-    }
     
     // Get dynamic containers
     const dynamicInputText = document.getElementById('dynamic_input_text_container');
@@ -57,13 +39,6 @@ document.addEventListener('turbo:load', () => {
     // Update dynamic field on selection change
     inputTypeSelect.addEventListener('change', () => {
       updateDynamicField(inputTypeSelect.value, dynamicInputText);
-    
-      const newFileInput = document.getElementById('file_input');
-      if (newFileInput){
-        newFileInput.addEventListener('change', validateFileExtension)
-      }
     });
-  
-    fileInput.addEventListener('change', validateFileExtension);
   
   });
